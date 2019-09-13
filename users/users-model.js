@@ -8,7 +8,7 @@ module.exports = {
 };
 
 function find() {
-  return db('users').select('id', 'username', 'user');
+  return db('users').select('id', 'username', 'role');
 }
 
 function findBy(filter) {
@@ -17,8 +17,9 @@ function findBy(filter) {
 
 async function add(user) {
   const [id] = await db('users').insert(user);
-
-  return findById(id);
+  return db('users')
+    .where({ id })
+    
 }
 
 function findById(id) {

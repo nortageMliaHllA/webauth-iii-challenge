@@ -12,7 +12,7 @@ router.post('/register', (req, res) => {
     Users.add(user)
       .then(saved => {
         const token = generateToken(saved);
-        res.status(201).json({saved,
+        res.status(201).json({
         user: saved,
       token
         });
@@ -30,7 +30,6 @@ router.post('/register', (req, res) => {
       .then(user => {
         if (user && bcrypt.compareSync(password, user.password)) {
           const token = generateToken(user);
-          console.log('token', token);
           res.status(200).json({
             message: `Welcome ${user.username}!`,
             token
@@ -44,11 +43,11 @@ router.post('/register', (req, res) => {
       });
   });
   
-  function generateToken() {
+  function generateToken(user) {
     const payload = {
       sub: user.id, 
       username: user.username,
-      user: user.user
+      role: user.role
     };
   
     const options = {
