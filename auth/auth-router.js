@@ -6,7 +6,7 @@ const Users = require('../users/users-model.js');
 
 router.post('/register', (req, res) => {
     let user = req.body;
-    const hash = bcrypt.hashSync(user.password, 10); // 2 ^ n
+    const hash = bcrypt.hashSync(user.password, 10); 
     user.password = hash;
   
     Users.add(user)
@@ -30,8 +30,10 @@ router.post('/register', (req, res) => {
       .then(user => {
         if (user && bcrypt.compareSync(password, user.password)) {
           const token = generateToken(user);
+          console.log('token', token);
           res.status(200).json({
             message: `Welcome ${user.username}!`,
+            token
           });
         } else {
           res.status(401).json({ message: 'Please try again' });
@@ -43,17 +45,15 @@ router.post('/register', (req, res) => {
   });
   
   function generateToken() {
-    // header, payload & verify signature /
-    // palload-> username, id, roles, expiration date /
     const payload = {
       sub: user.id, 
       username: user.username,
+      user: user.user
     };
   
     const options = {
       expiresIn: '1d'
     };
-    // verify signature-> a secret(hash) /
     return jwt.sign(payload, process.env.JWT_SECRET, options);
   }
   
